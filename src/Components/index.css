@@ -7,6 +7,8 @@
 }
 
 
+/*disabled {}*/
+
 .frame {
     position: absolute;
     top: 0;
@@ -58,9 +60,12 @@ input {
     margin-top: 10px;
 }
 
+
 .btn:disabled {
     background-color: #969696;
+    cursor: not-allowed;
 }
+
 h1 {
     font-weight: 700;
     font-size: 44px;
@@ -70,6 +75,7 @@ h1 {
 
 /*mobile device*/
 
+/*
 @media(max-width: 480px) and (min-width: 320px) { 
 img {
     display: none;
@@ -97,7 +103,8 @@ img {
         .frame {
             justify-content: center;
         }
-        }
+}*/
 
-
-
+        
+/*Button je trebalo da ima fokus*/
+/*Za error sam hteo da stavim setTimeout*/

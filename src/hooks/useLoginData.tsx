@@ -1,43 +1,49 @@
 import { useState } from "react";
 import { checkEmailAndPassword } from "../helpers/validation";
-/*interface LoginData {
-    email: string;
-    password: string;
-}*/ 
+ 
 
 
-const useLoginData = () => {
-    const [data, setUserData] = useState({email: "", password: ""}); // <LoginData>
-    const [active, setActive] = useState<boolean>(true);
-    const [errorMessage, setErrorMessage] = useState(false);
+const useLoginData = ({onSubmit}: {onSubmit?:(email: string, password: string) => {}}) => {
+    const[email, setEmail] = useState("");
+    const[password, setPassword] = useState("");
+
+        const validate = (emailValue: string , passwordValue: string) => {
+            let report =checkEmailAndPassword({email: passwordValue, password: passwordValue});
+            setErrorMessage(report)
+        }
     
-    const checkButtonStatus = (value: string) => {
-        value.length > 0 ? setActive(false) : setActive(true);
-        console.log(active);
+    const [errorMessage, setErrorMessage] = useState<string >("");
+    
+
+    const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => { // any type
+        const {value} = event.target;
+         
+        setEmail(value);
+        validate(value, password);
+
     }
 
-    const fillRightInput = (event: React.ChangeEvent<HTMLInputElement>) => { // any type
-        const {name, value} = event.target;
-        checkButtonStatus(value);
-        
-        setUserData(prev => ({
-            ...prev,
-            [name] : value
-    }))
-    // reuse custom hook 
+    const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => { // any type
+        const {value} = event.target; 
+        setPassword(value);
+        validate(email, value);
     }
 
     const submit = () => {
-        console.log('Submited');
-        if(!checkEmailAndPassword(data)) {
-            console.log("setuj na true")
-            setErrorMessage(true);
+
+        let report = checkEmailAndPassword({email, password});
+        if(report) setErrorMessage(report)
+        else if (onSubmit) {
+            onSubmit(email, password)
         }
+        console.log(errorMessage);
+        
         // funkcija submit koja prosledjuje data {email, password} na validaciju
         // validacija ce sadrzati dosta kombinacija recimo polje ne smete stavljati prazno, 
         // koje sve karaktere lozinka mora da sadrzi   
     }
-    return {active, errorMessage, fillRightInput, submit};
+    const active = email.length && password.length;
+    return {active, errorMessage, onEmailChange, onPasswordChange, submit};
 }
 
 export default useLoginData;

@@ -1,31 +1,38 @@
 import React from 'react';
 import useLoginData from '../hooks/useLoginData';
+import usemediaQuery from '../hooks/usemediaQuery';
 import './index.css';
 
 interface LoginProps{
-    name?: string;
-    password?: string;
+    
+    onSubmit?: (email: string, password: string) => {}
 }
 const Login: React.FC <LoginProps> = (props) => {
-    const{name, password} = props;
-    const {active, errorMessage, fillRightInput, submit } = useLoginData();
+    const{onSubmit} = props;
+    
+    const shoudHideImage = usemediaQuery();
+    console.log({shoudHideImage});
+
+    const {active, errorMessage, onEmailChange, onPasswordChange, submit } = useLoginData({onSubmit});
     return (
         
         <div className = "frame" >
-            <img alt = {"slika"}src = {"https://ichef.bbci.co.uk/news/999/cpsprodpb/1751E/production/_123881559_02.jpg"} />
+            {!shoudHideImage &&
+                <img alt = {"slika"}src = {"https://ichef.bbci.co.uk/news/999/cpsprodpb/1751E/production/_123881559_02.jpg"} />}
             <div className = "form-box">
                 <h1>Welcome Back!</h1>
                 <label>E-mail</label>
-                <input type="text" name = "email" onChange = {fillRightInput} />
+                <input type="text" name = "email" onChange = {onEmailChange} />
                 <label>Password</label>
-                <input type="password" name = "password" onChange = {fillRightInput} />
-                {errorMessage === true && 
-                <div style={{color: "red"}}>Eroor check your email and password</div>
+                <input type="password" name = "password" onChange = {onPasswordChange} />
+                {errorMessage  && 
+                <div style={{color: "red"}}>{errorMessage}</div>
                 }
                 
-                <button className="btn" disabled = {active} onClick = {submit}>Sign in</button>
+                <button className = {`btn ${!active && 'disabled'}`} disabled = {!active} onClick = {submit}>Sign in</button>
             </div>
         </div>
+
     )
 }
 
